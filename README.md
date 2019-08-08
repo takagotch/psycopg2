@@ -77,28 +77,28 @@ class NetworkingTestCase(testutils.ConnectingTestCase):
     cur = self.conn.cursor()
     psycopg2.extras.register_uoaddress(cur)
     
-    cur.execute()
-    self.assertEquals()
+    cur.execute("select %s", [ip.ip_interface('127.0.0.1/24')])
+    self.assertEquals(cur.fetchone()[0], '127.0.0.1/24')
     
-    cur.execute()
-    self.assertEquals()
+    cur.execute("select %s", [ip.ip_interface('::ffff:102:300/128')])
+    self.assertEquals(cur.fetchone()[], '::ffff:102:300/128')
     
-  def test_cidr_cast():
+  def test_cidr_cast(self):
     cur = self.conn.cursor()
     psycopg2.extras.register_ipaddress(cur)
     
-    cur.execute()
-    self.assert_()
+    cur.execute("select null:cidr")
+    self.assert_(cur.fetchone()[0] is None)
     
-    cur.execute()
-    obj = cur.fetchone()[]
-    self.assert_()
-    self.assertEqual()
+    cur.execute("select '127.0.0.0/24'::cidr")
+    obj = cur.fetchone()[0]
+    self.assert_(isinstance(obj, ip.IPv4Network), repr(obj))
+    self.assertEqual(obj, ip.ip_network('127.0.0.0/24'))
     
-    cur.execute()
-    obj = cur.fetchone()[]
-    self.assert_()
-    self.assertEquals()
+    cur.execute("select '::ffff:102:300/128'::cidr")
+    obj = cur.fetchone()[0]
+    self.assert_(isinstance(obj, ip.IPv6Network), repr(obj))
+    self.assertEquals(obj, ip.ip_network('::ffff:102:300/128'))
     
   @testutils.skp_before_postgres(8, 2)
   def test_cidr_array_cast(self):
